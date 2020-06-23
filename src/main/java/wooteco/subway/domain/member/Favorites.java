@@ -1,14 +1,21 @@
 package wooteco.subway.domain.member;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Embeddable;
+import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+@Embeddable
+@NoArgsConstructor
+@Getter
 public class Favorites {
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Favorite> favorites;
-
-    private Favorites() {
-    }
 
     public Favorites(List<Favorite> favorites) {
         this.favorites = favorites;
@@ -41,10 +48,6 @@ public class Favorites {
 
     public int size() {
         return favorites.size();
-    }
-
-    public List<Favorite> getFavorites() {
-        return favorites;
     }
 
     public void delete(Favorite favorite) {

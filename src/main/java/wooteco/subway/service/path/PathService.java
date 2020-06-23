@@ -46,7 +46,7 @@ public class PathService {
 
         List<LineStation> lineStations = lines.stream()
                 .flatMap(line -> line.getStations().stream())
-                .filter(lineStation -> Objects.nonNull(lineStation.getPreStationId()))
+                .filter(lineStation -> Objects.nonNull(lineStation.getPreStation()))
                 .collect(Collectors.toList());
 
         List<LineStation> paths = extractPathLineStation(path, lineStations);
@@ -54,7 +54,7 @@ public class PathService {
         int distance = paths.stream().mapToInt(LineStation::getDistance).sum();
 
         List<Station> pathStation = path.stream()
-                .map(stationId -> extractStation(stationId, stations))
+                .map(lineStation -> extractStation(lineStation, stations))
                 .collect(Collectors.toList());
 
         return new PathResponse(StationResponse.listOf(pathStation), duration, distance);

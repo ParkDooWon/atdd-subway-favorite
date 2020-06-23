@@ -8,7 +8,6 @@ import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.jdbc.Sql;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineResponse;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
@@ -26,7 +25,7 @@ import java.util.Map;
 
 // @formatter:off
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@Sql("/truncate.sql")
+//@Sql("/truncate.sql")
 @TestPropertySource(locations = "classpath:application-test.properties")
 public class AcceptanceTest {
     public static final String STATION_NAME_KANGNAM = "강남역";

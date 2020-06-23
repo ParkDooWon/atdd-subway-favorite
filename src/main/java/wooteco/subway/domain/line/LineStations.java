@@ -1,13 +1,19 @@
 package wooteco.subway.domain.line;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import wooteco.subway.domain.station.Station;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Embeddable;
+import javax.persistence.OneToMany;
+import java.util.*;
+
+@Embeddable
+@NoArgsConstructor
+@Getter
 public class LineStations {
+    @OneToMany(mappedBy = "line", cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<LineStation> stations;
 
     public LineStations(Set<LineStation> stations) {
@@ -23,12 +29,12 @@ public class LineStations {
     }
 
     public void add(LineStation targetLineStation) {
-        updatePreStationOfNextLineStation(targetLineStation.getPreStationId(), targetLineStation.getStationId());
+        updatePreStationOfNextLineStation(targetLineStation.getPreStation(), targetLineStation.getStation());
         stations.add(targetLineStation);
     }
 
     private void remove(LineStation targetLineStation) {
-        updatePreStationOfNextLineStation(targetLineStation.getStationId(), targetLineStation.getPreStationId());
+        updatePreStationOfNextLineStation(Station.toStation(targetLineStation.getStation().getId()), Station.toStation(targetLineStation.getPreStation().getId()));
         stations.remove(targetLineStation);
     }
 
@@ -37,49 +43,37 @@ public class LineStations {
                 .ifPresent(this::remove);
     }
 
-    public List<Long> getStationIds() {
-        List<Long> result = new ArrayList<>();
+    public List<Station> getSortedStations() {
+        List<Station> result = new ArrayList<>();
         extractNext(null, result);
         return result;
     }
 
-    private void extractNext(Long preStationId, List<Long> ids) {
-        stations.stream()
-                .filter(lineStation -> Objects.equals(lineStation.getPreStationId(), preStationId))
+    private void extractNext(Station preStation, List<Station> stations) {
+        this.stations.stream()
+                .filter(lineStation -> Objects.equals(lineStation.getPreStation(), preStation))
                 .findFirst()
                 .ifPresent(lineStation -> {
-                    Long nextStationId = lineStation.getStationId();
-                    ids.add(nextStationId);
-                    extractNext(nextStationId, ids);
+                    Station nextStation = lineStation.getStation();
+                    stations.add(nextStation);
+                    extractNext(nextStation, stations);
                 });
     }
 
-    private void updatePreStationOfNextLineStation(Long targetStationId, Long newPreStationId) {
-        extractByPreStationId(targetStationId)
-                .ifPresent(lineStation -> lineStation.updatePreLineStation(newPreStationId));
+    private void updatePreStationOfNextLineStation(Station targetStation, Station newPreStation) {
+        extractByPreStation(targetStation)
+                .ifPresent(lineStation -> lineStation.updatePreLineStation(newPreStation));
     }
 
     private Optional<LineStation> extractByStationId(Long stationId) {
         return stations.stream()
-                .filter(lineStation -> Objects.equals(lineStation.getStationId(), stationId))
+                .filter(lineStation -> Objects.equals(lineStation.getStation().getId(), stationId))
                 .findFirst();
     }
 
-    private Optional<LineStation> extractByPreStationId(Long preStationId) {
+    private Optional<LineStation> extractByPreStation(Station preStation) {
         return stations.stream()
-                .filter(lineStation -> Objects.equals(lineStation.getPreStationId(), preStationId))
+                .filter(lineStation -> Objects.equals(lineStation.getPreStation(), preStation))
                 .findFirst();
-    }
-
-    public int getTotalDistance() {
-        return stations.stream()
-                .mapToInt(LineStation::getDistance)
-                .sum();
-    }
-
-    public int getTotalDuration() {
-        return stations.stream()
-                .mapToInt(LineStation::getDuration)
-                .sum();
     }
 }

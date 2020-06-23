@@ -2,5 +2,5 @@ package wooteco.subway.domain.line;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface LineRepository extends JpaRepository<Line, Long> {
+public interface LineStationRepository extends JpaRepository<LineStation, Long> {
 }

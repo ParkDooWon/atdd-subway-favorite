@@ -1,22 +1,24 @@
 package wooteco.subway.domain.member;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.relational.core.mapping.Embedded;
 
+import javax.persistence.*;
 import java.util.List;
 
+@Entity
+@NoArgsConstructor
+@Getter
 public class Member {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String email;
     private String name;
     private String password;
-    @Embedded.Empty
+    @Embedded
     private Favorites favorites = Favorites.empty();
-
-    public Member() {
-    }
 
     public Member(String email, String name, String password) {
         this.email = email;

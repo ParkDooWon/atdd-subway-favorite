@@ -1,18 +1,24 @@
 package wooteco.subway.domain.member;
 
-import org.springframework.data.annotation.Id;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import java.util.Objects;
 import java.util.stream.Stream;
 
+@Entity
+@NoArgsConstructor
+@Getter
 public class Favorite {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long departStationId;
     private Long arriveStationId;
-
-    private Favorite() {
-    }
 
     public Favorite(Long departStationId, Long arriveStationId) {
         this.departStationId = departStationId;

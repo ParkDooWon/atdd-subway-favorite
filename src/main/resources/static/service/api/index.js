@@ -73,7 +73,7 @@ const api = (() => {
             }).then(response => {
                 if (!response.ok) {
                     SNACK_BAR("로그인을 다시 해주세요 :)");
-                    window.location.href = "/";
+                    // window.location.href = "/";
                 }
                 return response.json();
             })

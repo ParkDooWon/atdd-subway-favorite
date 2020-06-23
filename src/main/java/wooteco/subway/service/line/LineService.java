@@ -4,12 +4,14 @@ import org.springframework.stereotype.Service;
 import wooteco.subway.domain.line.Line;
 import wooteco.subway.domain.line.LineRepository;
 import wooteco.subway.domain.line.LineStation;
+import wooteco.subway.domain.station.Station;
 import wooteco.subway.exception.LineNotFoundException;
 import wooteco.subway.service.line.dto.LineDetailResponse;
 import wooteco.subway.service.line.dto.LineRequest;
 import wooteco.subway.service.line.dto.LineStationCreateRequest;
 import wooteco.subway.service.line.dto.WholeSubwayResponse;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
@@ -30,33 +32,36 @@ public class LineService {
         return lineRepository.findAll();
     }
 
+    @Transactional
     public void updateLine(Long id, LineRequest lineRequest) {
         Line persistLine = lineRepository.findById(id)
                 .orElseThrow(() -> new LineNotFoundException("노선을 찾을 수 없습니다."));
         persistLine.update(lineRequest.toLine());
-        lineRepository.save(persistLine);
+//        lineRepository.save(persistLine);
     }
 
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
     }
 
+    @Transactional
     public void addLineStation(Long id, LineStationCreateRequest lineStationCreateRequest) {
         Line line = lineRepository.findById(id)
                 .orElseThrow(() -> new LineNotFoundException("노선을 찾을 수 없습니다."));
-        LineStation lineStation = new LineStation(lineStationCreateRequest.getPreStationId(),
-                lineStationCreateRequest.getStationId(),
+        LineStation lineStation = new LineStation(line, Station.toStation(lineStationCreateRequest.getPreStationId()),
+                Station.toStation(lineStationCreateRequest.getStationId()),
                 lineStationCreateRequest.getDistance(), lineStationCreateRequest.getDuration());
         line.addLineStation(lineStation);
 
-        lineRepository.save(line);
+//        lineRepository.save(line);
     }
 
+    @Transactional
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = lineRepository.findById(lineId)
                 .orElseThrow(() -> new LineNotFoundException("노선을 찾을 수 없습니다."));
         line.removeLineStationById(stationId);
-        lineRepository.save(line);
+//        lineRepository.save(line);
     }
 
     public LineDetailResponse retrieveLine(Long id) {

@@ -16,32 +16,32 @@ import wooteco.subway.web.member.InvalidAuthenticationException;
 @ControllerAdvice
 public class ExceptionController {
 
-	@ExceptionHandler(IllegalArgumentException.class)
-	public ResponseEntity<ErrorResponse> handleIllegalArgumentException() {
-		ErrorCode errorCode = ErrorCode.BAD_REQUEST;
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalArgumentException() {
+        ErrorCode errorCode = ErrorCode.BAD_REQUEST;
 
-		return ResponseEntity
-				.status(HttpStatus.BAD_REQUEST)
-				.body(ErrorResponse.of(errorCode.getStatus(), errorCode.getErrorMessage()));
-	}
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.of(errorCode.getStatus(), errorCode.getErrorMessage()));
+    }
 
-	@ExceptionHandler(Exception.class)
-	public ResponseEntity<ErrorResponse> handleException() {
-		ErrorCode errorCode = ErrorCode.INTERNAL_SERVER_ERROR;
+//	@ExceptionHandler(Exception.class)
+//	public ResponseEntity<ErrorResponse> handleException() {
+//		ErrorCode errorCode = ErrorCode.INTERNAL_SERVER_ERROR;
+//
+//		return ResponseEntity
+//				.status(HttpStatus.INTERNAL_SERVER_ERROR)
+//				.body(ErrorResponse.of(errorCode.getStatus(), errorCode.getErrorMessage()));
+//	}
 
-		return ResponseEntity
-				.status(HttpStatus.INTERNAL_SERVER_ERROR)
-				.body(ErrorResponse.of(errorCode.getStatus(), errorCode.getErrorMessage()));
-	}
+    @ExceptionHandler(InvalidAuthenticationException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidAuthenticationException() {
+        ErrorCode errorCode = ErrorCode.UNAUTHORIZED;
 
-	@ExceptionHandler(InvalidAuthenticationException.class)
-	public ResponseEntity<ErrorResponse> handleInvalidAuthenticationException() {
-		ErrorCode errorCode = ErrorCode.UNAUTHORIZED;
-
-		return ResponseEntity
-				.status(HttpStatus.UNAUTHORIZED)
-				.body(ErrorResponse.of(errorCode.getStatus(), errorCode.getErrorMessage()));
-	}
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(ErrorResponse.of(errorCode.getStatus(), errorCode.getErrorMessage()));
+    }
 
 	@ExceptionHandler(SameSourceTargetException.class)
 	public ResponseEntity<ErrorResponse> handleSameSourceTargetException() {

@@ -7,6 +7,8 @@ import wooteco.subway.infra.JwtTokenProvider;
 import wooteco.subway.service.member.dto.LoginRequest;
 import wooteco.subway.service.member.dto.UpdateMemberRequest;
 
+import javax.transaction.Transactional;
+
 @Service
 public class MemberService {
     private final MemberRepository memberRepository;
@@ -26,9 +28,10 @@ public class MemberService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 유저가 없습니다."));
     }
 
+    @Transactional
     public void updateMember(Member member, UpdateMemberRequest updateMemberRequest) {
         member.update(updateMemberRequest.getName(), updateMemberRequest.getPassword());
-        memberRepository.save(member);
+//        memberRepository.save(member);
     }
 
     public void deleteMember(Member member) {
